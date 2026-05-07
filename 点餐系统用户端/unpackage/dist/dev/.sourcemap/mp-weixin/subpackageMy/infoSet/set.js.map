@@ -1,0 +1,1 @@
+{"version":3,"file":"set.js","sources":["../../../HBuilderX/plugins/uniapp-cli-vite/uniPage:/c3VicGFja2FnZU15XGluZm9TZXRcc2V0LnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'E:/dev/project/DianCan/点餐系统用户端/subpackageMy/infoSet/set.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AACA,GAAG,WAAW,eAAe;"}

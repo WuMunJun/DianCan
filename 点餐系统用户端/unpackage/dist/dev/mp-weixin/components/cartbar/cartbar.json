@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-transition": "../uni-transition/uni-transition",
+    "cart-popup": "../cart-popup/cart-popup"
+  }
+}

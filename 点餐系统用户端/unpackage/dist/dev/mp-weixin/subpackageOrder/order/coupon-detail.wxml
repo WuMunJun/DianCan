@@ -1,0 +1,1 @@
+<view class="wrap"><view class="wrap__title">请将二维码出示给核销员</view><view class="wrap__image"><u-image wx:if="{{a}}" u-i="339af279-0" bind:__l="__l" u-p="{{a}}"></u-image></view><view class="wrap__tips"> 请勿出示给陌生人，以防泄露！ </view></view>

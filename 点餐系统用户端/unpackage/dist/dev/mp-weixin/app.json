@@ -1,0 +1,83 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/order/order",
+    "pages/my/my",
+    "pages/login/login",
+    "pages/friendRegistration/friend-registration"
+  ],
+  "subPackages": [
+    {
+      "root": "subpackageHome",
+      "pages": [
+        "pointSingle/point-single",
+        "setTlement/pay",
+        "setTlement/remark",
+        "pointsMall/points-mall",
+        "pointsMall/withdraw-history"
+      ]
+    },
+    {
+      "root": "subpackageOrder",
+      "pages": [
+        "order/order-detail",
+        "order/coupon-detail"
+      ]
+    },
+    {
+      "root": "subpackageMy",
+      "pages": [
+        "myAddress/add-address",
+        "myAddress/address-manage",
+        "infoSet/set",
+        "myBalance/balance-topup",
+        "myCoupon/coupon-topup",
+        "riderCenter/rider-center"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "倚品美食馆",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#A8A8A8",
+    "selectedColor": "#0A3D28",
+    "list": [
+      {
+        "iconPath": "/static/tabbar/home.png",
+        "selectedIconPath": "/static/tabbar/select-home.png",
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "iconPath": "/static/tabbar/order.png",
+        "selectedIconPath": "/static/tabbar/select-order.png",
+        "pagePath": "pages/order/order",
+        "text": "订单"
+      },
+      {
+        "iconPath": "/static/tabbar/my.png",
+        "selectedIconPath": "/static/tabbar/select-my.png",
+        "pagePath": "pages/my/my",
+        "text": "我的"
+      }
+    ]
+  },
+  "preloadRule": {
+    "pages/home/home": {
+      "network": "all",
+      "packages": [
+        "subpackageHome",
+        "subpackageOrder",
+        "subpackageMy"
+      ]
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
+  "usingComponents": {}
+}

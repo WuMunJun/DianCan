@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "结算订单",
+  "usingComponents": {
+    "u-alert-tips": "../../uni_modules/vk-uview-ui/components/u-alert-tips/u-alert-tips",
+    "u-icon": "../../uni_modules/vk-uview-ui/components/u-icon/u-icon",
+    "u-image": "../../uni_modules/vk-uview-ui/components/u-image/u-image",
+    "u-input": "../../uni_modules/vk-uview-ui/components/u-input/u-input",
+    "list-cell": "../../components/list-cell/list-cell",
+    "time-picker": "../../uni_modules/hbxw-timepicker/components/hbxw-timepicker/hbxw-timepicker"
+  }
+}

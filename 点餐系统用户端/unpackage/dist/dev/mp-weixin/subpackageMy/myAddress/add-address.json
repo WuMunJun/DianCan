@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "编辑地址",
+  "usingComponents": {
+    "u-input": "../../uni_modules/vk-uview-ui/components/u-input/u-input",
+    "u-form-item": "../../uni_modules/vk-uview-ui/components/u-form-item/u-form-item",
+    "u-form": "../../uni_modules/vk-uview-ui/components/u-form/u-form"
+  }
+}

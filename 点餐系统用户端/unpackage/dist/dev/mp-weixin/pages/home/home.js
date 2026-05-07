@@ -1,0 +1,143 @@
+"use strict";
+const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
+const _sfc_main = {
+  data() {
+    return {
+      userinfo: {},
+      swiperList: [{
+        image: "/static/img/home/banner.jpg"
+      }],
+      showZhuohaoPopup: false,
+      currentZhuohao: "",
+      selectedPeople: 1
+    };
+  },
+  onLoad(options) {
+    if (options.scene) {
+      const scene = decodeURIComponent(options.scene);
+      const params = this.parseScene(scene);
+      if (params.zhuohao) {
+        this.currentZhuohao = params.zhuohao;
+        this.showZhuohaoPopup = true;
+      }
+    }
+  },
+  methods: {
+    parseScene(scene) {
+      const params = {};
+      const pairs = scene.split("&");
+      pairs.forEach((pair) => {
+        const [key, value] = pair.split("=");
+        if (key && value) {
+          params[key] = value;
+        }
+      });
+      return params;
+    },
+    confirmZhuohao() {
+      this.$store.commit("SET_ZHUOHAO", this.currentZhuohao);
+      this.$store.commit("SET_PEOPLE_COUNT", this.selectedPeople);
+      this.showZhuohaoPopup = false;
+      this.$store.commit("SET_ORDER_TYPE", "takein");
+      common_vendor.index.navigateTo({
+        url: `/subpackageHome/pointSingle/point-single`
+      });
+    },
+    handleLogin() {
+      common_vendor.index.navigateTo({
+        url: `/pages/login/login`
+      });
+    },
+    handlePointSingle(type) {
+      this.$store.commit("SET_ORDER_TYPE", type);
+      common_vendor.index.navigateTo({
+        url: `/subpackageHome/pointSingle/point-single`
+      });
+    },
+    handleMyPromotion() {
+      common_vendor.index.navigateTo({
+        url: `/subpackageHome/pointsMall/points-mall`
+      });
+    }
+  }
+};
+if (!Array) {
+  const _easycom_u_swiper2 = common_vendor.resolveComponent("u-swiper");
+  const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
+  const _easycom_u_icon2 = common_vendor.resolveComponent("u-icon");
+  const _easycom_u_popup2 = common_vendor.resolveComponent("u-popup");
+  (_easycom_u_swiper2 + _easycom_u_image2 + _easycom_u_icon2 + _easycom_u_popup2)();
+}
+const _easycom_u_swiper = () => "../../uni_modules/vk-uview-ui/components/u-swiper/u-swiper.js";
+const _easycom_u_image = () => "../../uni_modules/vk-uview-ui/components/u-image/u-image.js";
+const _easycom_u_icon = () => "../../uni_modules/vk-uview-ui/components/u-icon/u-icon.js";
+const _easycom_u_popup = () => "../../uni_modules/vk-uview-ui/components/u-popup/u-popup.js";
+if (!Math) {
+  (_easycom_u_swiper + _easycom_u_image + _easycom_u_icon + _easycom_u_popup)();
+}
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return common_vendor.e({
+    a: $data.swiperList.length
+  }, $data.swiperList.length ? {
+    b: common_vendor.p({
+      list: $data.swiperList,
+      height: "600",
+      ["border-radius"]: "0",
+      mode: "none"
+    })
+  } : {}, {
+    c: common_vendor.p({
+      src: common_assets._imports_0,
+      width: "60",
+      height: "60",
+      ["border-radius"]: "50%",
+      ["lazy-load"]: true
+    }),
+    d: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args), "f4"),
+    e: common_vendor.p({
+      src: common_assets._imports_1,
+      width: "180",
+      height: "180",
+      ["lazy-load"]: true
+    }),
+    f: common_vendor.o(($event) => $options.handlePointSingle("takein"), "d7"),
+    g: common_vendor.p({
+      src: common_assets._imports_2,
+      width: "180",
+      height: "180",
+      ["lazy-load"]: true
+    }),
+    h: common_vendor.o(($event) => $options.handlePointSingle("takeout"), "51"),
+    i: common_vendor.p({
+      src: common_assets._imports_3,
+      width: "180",
+      height: "180",
+      ["lazy-load"]: true
+    }),
+    j: common_vendor.p({
+      name: "arrow-right",
+      size: "24"
+    }),
+    k: common_vendor.o((...args) => $options.handleMyPromotion && $options.handleMyPromotion(...args), "0c"),
+    l: common_vendor.t($data.currentZhuohao),
+    m: common_vendor.f(10, (n, k0, i0) => {
+      return {
+        a: common_vendor.t(n),
+        b: n,
+        c: $data.selectedPeople === n ? 1 : "",
+        d: common_vendor.o(($event) => $data.selectedPeople = n, n)
+      };
+    }),
+    n: common_vendor.o((...args) => $options.confirmZhuohao && $options.confirmZhuohao(...args), "53"),
+    o: common_vendor.o(($event) => $data.showZhuohaoPopup = $event, "1e"),
+    p: common_vendor.p({
+      mode: "center",
+      ["border-radius"]: "20",
+      modelValue: $data.showZhuohaoPopup
+    })
+  });
+}
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
+wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/home/home.js.map

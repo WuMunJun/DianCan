@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "余额",
+  "usingComponents": {
+    "u-grid-item": "../../uni_modules/vk-uview-ui/components/u-grid-item/u-grid-item",
+    "u-grid": "../../uni_modules/vk-uview-ui/components/u-grid/u-grid"
+  }
+}

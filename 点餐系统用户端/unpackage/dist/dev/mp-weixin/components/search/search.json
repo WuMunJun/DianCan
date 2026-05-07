@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-transition": "../uni-transition/uni-transition",
+    "u-search": "../../uni_modules/vk-uview-ui/components/u-search/u-search",
+    "u-navbar": "../../uni_modules/vk-uview-ui/components/u-navbar/u-navbar",
+    "u-icon": "../../uni_modules/vk-uview-ui/components/u-icon/u-icon"
+  }
+}
