@@ -1,0 +1,1 @@
+本项目是用vue3+uniapp+unicloud的框架开发的扫码点餐的微信小程序
