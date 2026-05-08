@@ -10,9 +10,7 @@
     },
     "author": "DCloud",
     "license": "Apache-2.0",
-    "dependencies": {
-        "uni-config-center": "file:..\/..\/..\/..\/..\/uni-config-center\/uniCloud\/cloudfunctions\/common\/uni-config-center"
-    },
+    "dependencies": {},
     "origin-plugin-dev-name": "uni-id-common",
     "origin-plugin-version": "1.0.19",
     "plugin-dev-name": "uni-id-common",

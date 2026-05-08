@@ -3,16 +3,11 @@ const createConfig = require('uni-config-center')
 
 async function getAccessTokenInner() {
 	const config = createConfig({
-		pluginId: 'zhuohao'
+		pluginId: 'uni-id'
 	})
-	const appid = config.config('mpWeixin.appid')
-	const secret = config.config('mpWeixin.secret')
-	if (!appid || !secret) {
-		return {
-			errCode: 'CONFIG_MISSING',
-			errMsg: '请配置小程序appid和secret'
-		}
-	}
+	const mpWeixinConfig = config.config('mp-weixin.oauth.weixin')
+	const appid = mpWeixinConfig && mpWeixinConfig.appid
+	const secret = mpWeixinConfig && mpWeixinConfig.appsecret
 	const db = uniCloud.database()
 	const collection = db.collection('access-token')
 	const now = Date.now()
@@ -66,19 +61,31 @@ async function generateQrcodeInner(zhuohao) {
 			contentType: 'json',
 			dataType: 'buffer',
 			data: {
-				scene: 'zhuohao=' + zhuohao,
-				page: 'pages/home/home',
+				scene: zhuohao,
 				width: 430
 			}
 		})
 		if (result.status === 200 && result.data) {
-			const uploadRes = await uniCloud.uploadFile({
-				cloudPath: 'qrcode/zhuohao_' + zhuohao + '_' + Date.now() + '.png',
-				fileContent: result.data
-			})
-			return {
-				errCode: 0,
-				fileID: uploadRes.fileID
+			const contentType = result.headers && result.headers['content-type'] || ''
+			if (contentType.includes('image')) {
+				const uploadRes = await uniCloud.uploadFile({
+					cloudPath: 'qrcode/zhuohao_' + zhuohao + '_' + Date.now() + '.png',
+					fileContent: result.data
+				})
+				return {
+					errCode: 0,
+					fileID: uploadRes.fileID
+				}
+			} else {
+				let errMsg = '生成小程序码失败'
+				try {
+					const errData = JSON.parse(result.data.toString())
+					errMsg = errData.errmsg || errMsg
+				} catch (e) {}
+				return {
+					errCode: 'GENERATE_QRCODE_FAILED',
+					errMsg: errMsg
+				}
 			}
 		} else {
 			return {
@@ -97,7 +104,14 @@ async function generateQrcodeInner(zhuohao) {
 module.exports = {
 	_before: function () {
 	},
-	async createZhuohao(zhuohao) {
+	async createZhuohao(params) {
+		let zhuohao, status = '空桌'
+		if (typeof params === 'object') {
+			zhuohao = params.zhuohao
+			status = params.status || '空桌'
+		} else {
+			zhuohao = params
+		}
 		if (!zhuohao) {
 			return {
 				errCode: 'PARAM_IS_NULL',
@@ -121,7 +135,8 @@ module.exports = {
 		}
 		const addRes = await collection.add({
 			zhuohao: zhuohao,
-			qrcode: qrcodeRes.fileID
+			qrcode: qrcodeRes.fileID,
+			status: status
 		})
 		return {
 			errCode: 0,
@@ -129,7 +144,8 @@ module.exports = {
 			data: {
 				id: addRes.id,
 				zhuohao: zhuohao,
-				qrcode: qrcodeRes.fileID
+				qrcode: qrcodeRes.fileID,
+				status: status
 			}
 		}
 	},
@@ -148,7 +164,16 @@ module.exports = {
 			data: res.data
 		}
 	},
-	async updateZhuohao(id, zhuohao) {
+	async updateZhuohao(params) {
+		let id, zhuohao, status
+		if (typeof params === 'object') {
+			id = params.id
+			zhuohao = params.zhuohao
+			status = params.status
+		} else {
+			id = arguments[0]
+			zhuohao = arguments[1]
+		}
 		if (!id || !zhuohao) {
 			return {
 				errCode: 'PARAM_IS_NULL',
@@ -166,6 +191,9 @@ module.exports = {
 		}
 		const currentZhuohao = currentRes.data[0].zhuohao
 		let updateData = { zhuohao: zhuohao }
+		if (status !== undefined) {
+			updateData.status = status
+		}
 		if (zhuohao !== currentZhuohao) {
 			const qrcodeRes = await generateQrcodeInner(zhuohao)
 			if (qrcodeRes.errCode) {
@@ -180,7 +208,8 @@ module.exports = {
 			data: {
 				id: id,
 				zhuohao: zhuohao,
-				qrcode: updateData.qrcode || currentRes.data[0].qrcode
+				qrcode: updateData.qrcode || currentRes.data[0].qrcode,
+				status: status || currentRes.data[0].status
 			}
 		}
 	},
@@ -224,7 +253,8 @@ module.exports = {
 			}
 		}
 		const db = uniCloud.database()
-		const res = await db.collection('zhuohao').doc(id).remove()
+		const collection = db.collection('zhuohao')
+		await collection.doc(id).remove()
 		return {
 			errCode: 0,
 			errMsg: '删除成功'
