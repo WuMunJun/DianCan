@@ -14,25 +14,78 @@ const _sfc_main = {
     };
   },
   onLoad(options) {
-    if (options.scene) {
-      const scene = decodeURIComponent(options.scene);
+    common_vendor.index.__f__("log", "at pages/home/home.vue:96", "首页加载，options:", options);
+    this.handleQrcode(options);
+  },
+  onShow() {
+    this.checkQrcodeFromStorage();
+  },
+  methods: {
+    handleQrcode(options) {
+      if (options.scene) {
+        common_vendor.index.__f__("log", "at pages/home/home.vue:107", "从options.scene:", options.scene);
+        this.processScene(options.scene);
+        return;
+      }
+      if (options.q) {
+        common_vendor.index.__f__("log", "at pages/home/home.vue:114", "从options.q:", options.q);
+        const scene = this.decodeQueryString(options.q);
+        if (scene) {
+          this.processScene(scene);
+        }
+        return;
+      }
+      this.checkQrcodeFromStorage();
+    },
+    checkQrcodeFromStorage() {
+      const savedScene = common_vendor.index.getStorageSync("qrcode_scene");
+      if (savedScene) {
+        common_vendor.index.__f__("log", "at pages/home/home.vue:128", "从缓存读取scene:", savedScene);
+        this.processScene(savedScene);
+        common_vendor.index.removeStorageSync("qrcode_scene");
+      }
+    },
+    decodeQueryString(q) {
+      try {
+        let result = {};
+        const queryString = decodeURIComponent(q);
+        const index = queryString.indexOf("?");
+        if (index !== -1) {
+          return queryString.slice(index + 1);
+        }
+        return queryString;
+      } catch (e) {
+        return q;
+      }
+    },
+    processScene(scene) {
+      if (!scene)
+        return;
       const params = this.parseScene(scene);
+      common_vendor.index.__f__("log", "at pages/home/home.vue:149", "解析scene参数:", params);
       if (params.zhuohao) {
         this.currentZhuohao = params.zhuohao;
         this.showZhuohaoPopup = true;
       }
-    }
-  },
-  methods: {
+    },
     parseScene(scene) {
       const params = {};
-      const pairs = scene.split("&");
-      pairs.forEach((pair) => {
-        const [key, value] = pair.split("=");
-        if (key && value) {
-          params[key] = value;
+      try {
+        let sceneStr = decodeURIComponent(scene);
+        if (sceneStr.indexOf("=") !== -1) {
+          const pairs = sceneStr.split("&");
+          pairs.forEach((pair) => {
+            const [key, value] = pair.split("=");
+            if (key && value) {
+              params[key.trim()] = value.trim();
+            }
+          });
+        } else {
+          params.zhuohao = sceneStr;
         }
-      });
+      } catch (e) {
+        common_vendor.index.__f__("error", "at pages/home/home.vue:173", "解析scene失败:", e);
+      }
       return params;
     },
     confirmZhuohao() {
@@ -94,21 +147,21 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       ["border-radius"]: "50%",
       ["lazy-load"]: true
     }),
-    d: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args), "f4"),
+    d: common_vendor.o((...args) => $options.handleLogin && $options.handleLogin(...args), "0b"),
     e: common_vendor.p({
       src: common_assets._imports_1,
       width: "180",
       height: "180",
       ["lazy-load"]: true
     }),
-    f: common_vendor.o(($event) => $options.handlePointSingle("takein"), "d7"),
+    f: common_vendor.o(($event) => $options.handlePointSingle("takein"), "56"),
     g: common_vendor.p({
       src: common_assets._imports_2,
       width: "180",
       height: "180",
       ["lazy-load"]: true
     }),
-    h: common_vendor.o(($event) => $options.handlePointSingle("takeout"), "51"),
+    h: common_vendor.o(($event) => $options.handlePointSingle("takeout"), "7e"),
     i: common_vendor.p({
       src: common_assets._imports_3,
       width: "180",
@@ -119,7 +172,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       name: "arrow-right",
       size: "24"
     }),
-    k: common_vendor.o((...args) => $options.handleMyPromotion && $options.handleMyPromotion(...args), "0c"),
+    k: common_vendor.o((...args) => $options.handleMyPromotion && $options.handleMyPromotion(...args), "ea"),
     l: common_vendor.t($data.currentZhuohao),
     m: common_vendor.f(10, (n, k0, i0) => {
       return {
@@ -129,8 +182,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.o(($event) => $data.selectedPeople = n, n)
       };
     }),
-    n: common_vendor.o((...args) => $options.confirmZhuohao && $options.confirmZhuohao(...args), "53"),
-    o: common_vendor.o(($event) => $data.showZhuohaoPopup = $event, "1e"),
+    n: common_vendor.o((...args) => $options.confirmZhuohao && $options.confirmZhuohao(...args), "d4"),
+    o: common_vendor.o(($event) => $data.showZhuohaoPopup = $event, "87"),
     p: common_vendor.p({
       mode: "center",
       ["border-radius"]: "20",

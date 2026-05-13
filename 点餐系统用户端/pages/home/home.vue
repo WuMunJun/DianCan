@@ -86,32 +86,92 @@
 				userinfo: {},
 				swiperList: [{
 					image: '/static/img/home/banner.jpg'
-				}],
+			}],
 				showZhuohaoPopup: false,
 				currentZhuohao: '',
 				selectedPeople: 1
 			}
 		},
 		onLoad(options) {
-			if (options.scene) {
-				const scene = decodeURIComponent(options.scene)
+			console.log('首页加载，options:', options)
+			this.handleQrcode(options)
+		},
+		onShow() {
+			// 每次页面显示时也检查一下，确保能捕获扫码参数
+			this.checkQrcodeFromStorage()
+		},
+		methods: {
+			handleQrcode(options) {
+				// 方式1: 从 onLoad options 读取
+				if (options.scene) {
+					console.log('从options.scene:', options.scene)
+					this.processScene(options.scene)
+					return
+				}
+
+				// 方式2: 从扫码进入小程序（开发工具设置
+				if (options.q) {
+					console.log('从options.q:', options.q)
+					const scene = this.decodeQueryString(options.q)
+					if (scene) {
+						this.processScene(scene)
+					}
+					return
+				}
+
+				// 方式3: 从存储读取
+				this.checkQrcodeFromStorage()
+			},
+			checkQrcodeFromStorage() {
+				const savedScene = uni.getStorageSync('qrcode_scene')
+				if (savedScene) {
+					console.log('从缓存读取scene:', savedScene)
+					this.processScene(savedScene)
+					uni.removeStorageSync('qrcode_scene') // 避免重复弹出
+				}
+			},
+			decodeQueryString(q) {
+				try {
+					let result = {}
+					const queryString = decodeURIComponent(q)
+					const index = queryString.indexOf('?')
+					if (index !== -1) {
+						return queryString.slice(index + 1)
+					}
+					return queryString
+				} catch (e) {
+					return q
+				}
+			},
+			processScene(scene) {
+				if (!scene) return
 				const params = this.parseScene(scene)
+				console.log('解析scene参数:', params)
 				if (params.zhuohao) {
 					this.currentZhuohao = params.zhuohao
 					this.showZhuohaoPopup = true
 				}
-			}
-		},
-		methods: {
+			},
 			parseScene(scene) {
 				const params = {}
-				const pairs = scene.split('&')
-				pairs.forEach(pair => {
-					const [key, value] = pair.split('=')
-					if (key && value) {
-						params[key] = value
+				try {
+					let sceneStr = decodeURIComponent(scene)
+					// 处理常见格式：zhuohao=1
+					if (sceneStr.indexOf('=') !== -1) {
+						const pairs = sceneStr.split('&')
+						pairs.forEach(pair => {
+							const [key, value] = pair.split('=')
+							if (key && value) {
+								params[key.trim()] = value.trim()
+							}
+						})
+					} else {
+						// 兼容纯桌号
+						params.zhuohao = sceneStr
 					}
-				})
+				} catch (e) {
+					console.error('解析scene失败:', e)
+				}
 				return params
 			},
 			confirmZhuohao() {

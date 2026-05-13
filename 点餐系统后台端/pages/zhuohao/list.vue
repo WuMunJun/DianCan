@@ -1,13 +1,28 @@
 <template>
   <view class="container">
-    <view class="table-list">
-      <view v-for="(item, index) in dataList" :key="index" class="table-item" @click="handleItemClick(item._id)">
-        <view class="table-info">
-          <text class="table-name">桌号：{{item.zhuohao}}</text>
-          <text class="table-status" :class="'status-' + item.status">{{getStatusText(item.status)}}</text>
+    <view class="status-bar">
+      <view class="status-dot" v-for="item in statusLegend" :key="item.label">
+        <view class="dot" :style="{backgroundColor: item.color}"></view>
+        <text class="dot-text">{{item.label}}</text>
+      </view>
+    </view>
+    <view class="table-grid">
+      <view v-for="(item, index) in dataList" :key="index" class="table-card" :class="'card-' + item.status" @click="handleItemClick(item._id)">
+        <view class="card-header">
+          <text class="card-zhuohao">{{item.zhuohao}}</text>
+          <view class="card-status-tag" :style="{backgroundColor: getStatusColor(item.status), color: '#fff'}">
+            {{getStatusText(item.status)}}
+          </view>
         </view>
-        <image v-if="item.qrcodeUrl" :src="item.qrcodeUrl" class="qrcode-img" mode="aspectFit"></image>
-        <view class="arrow">></view>
+        <view class="card-body">
+          <text class="card-info">{{item.zhuoxing || '中桌'}} · {{item.renshu || 4}}人</text>
+        </view>
+        <view class="card-footer">
+          <image v-if="item.qrcodeUrl" :src="item.qrcodeUrl" class="card-qrcode" mode="aspectFit"></image>
+          <view v-else class="card-qrcode-placeholder">
+            <text class="placeholder-text">无二维码</text>
+          </view>
+        </view>
       </view>
     </view>
     <uni-load-more :status="loading?'loading':(hasMore ? 'more' : 'noMore')"></uni-load-more>
@@ -25,8 +40,15 @@
         hasMore: true,
         pagination: {
           current: 0,
-          size: 20
-        }
+          size: 50
+        },
+        statusLegend: [
+          { label: '空桌', color: '#4caf50' },
+          { label: '已开台', color: '#ff9800' },
+          { label: '已下单', color: '#2196f3' },
+          { label: '已预定', color: '#9c27b0' },
+          { label: '已结账', color: '#e91e63' }
+        ]
       }
     },
     onShow() {
@@ -54,7 +76,7 @@
         try {
           const skip = this.pagination.current * this.pagination.size
           const res = await db.collection('zhuohao')
-            .field('zhuohao,qrcode,status')
+            .field('zhuohao,zhuoxing,renshu,qrcode,status')
             .orderBy('create_time', 'desc')
             .skip(skip)
             .limit(this.pagination.size)
@@ -105,9 +127,20 @@
           '空桌': '空桌',
           '已开台': '已开台',
           '已下单': '已下单',
-          '已结账': '已结账'
+          '已结账': '已结账',
+          '已预定': '已预定'
         }
         return statusMap[status] || '空桌'
+      },
+      getStatusColor(status) {
+        const colorMap = {
+          '空桌': '#4caf50',
+          '已开台': '#ff9800',
+          '已下单': '#2196f3',
+          '已结账': '#e91e63',
+          '已预定': '#9c27b0'
+        }
+        return colorMap[status] || '#4caf50'
       },
       fabClick() {
         uni.navigateTo({
@@ -127,62 +160,92 @@
 .container {
   padding: 20rpx;
 }
-.table-list {
+.status-bar {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 20rpx;
-}
-.table-item {
+  padding: 20rpx;
   background-color: #fff;
-  border-radius: 16rpx;
-  padding: 30rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+.status-dot {
   display: flex;
   align-items: center;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  gap: 8rpx;
 }
-.table-info {
-  flex: 1;
+.dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+}
+.dot-text {
+  font-size: 24rpx;
+  color: #666;
+}
+.table-grid {
   display: flex;
-  flex-direction: column;
-  gap: 10rpx;
+  flex-wrap: wrap;
+  gap: 20rpx;
 }
-.table-name {
-  font-size: 32rpx;
+.table-card {
+  width: calc(50% - 10rpx);
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  border-top: 6rpx solid #4caf50;
+  box-sizing: border-box;
+}
+.card-空桌 { border-top-color: #4caf50; }
+.card-已开台 { border-top-color: #ff9800; }
+.card-已下单 { border-top-color: #2196f3; }
+.card-已结账 { border-top-color: #e91e63; }
+.card-已预定 { border-top-color: #9c27b0; }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+.card-zhuohao {
+  font-size: 36rpx;
   font-weight: bold;
   color: #333;
 }
-.table-status {
+.card-status-tag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 16rpx;
+}
+.card-body {
+  margin-bottom: 16rpx;
+}
+.card-info {
   font-size: 24rpx;
-  padding: 6rpx 16rpx;
-  border-radius: 20rpx;
-  display: inline-block;
-  width: fit-content;
+  color: #999;
 }
-.status-空桌 {
-  background-color: #e8f5e9;
-  color: #4caf50;
+.card-footer {
+  display: flex;
+  justify-content: center;
 }
-.status-已开台 {
-  background-color: #fff3e0;
-  color: #ff9800;
-}
-.status-已下单 {
-  background-color: #e3f2fd;
-  color: #2196f3;
-}
-.status-已结账 {
-  background-color: #fce4ec;
-  color: #e91e63;
-}
-.qrcode-img {
+.card-qrcode {
   width: 120rpx;
   height: 120rpx;
-  margin-left: 20rpx;
-  border-radius: 10rpx;
+  border-radius: 8rpx;
 }
-.arrow {
-  color: #999;
-  font-size: 28rpx;
-  margin-left: 20rpx;
+.card-qrcode-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.placeholder-text {
+  font-size: 20rpx;
+  color: #ccc;
 }
 </style>

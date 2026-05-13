@@ -26,14 +26,31 @@ if (!Math) {
   "./subpackageMy/riderCenter/rider-center.js";
 }
 const _sfc_main = {
-  onLaunch: function() {
-    common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
+  onLaunch: function(options) {
+    common_vendor.index.__f__("log", "at App.vue:4", "App Launch", options);
+    if (options.scene) {
+      this.handleScene(options.scene);
+    }
   },
-  onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:7", "App Show");
+  onShow: function(options) {
+    common_vendor.index.__f__("log", "at App.vue:11", "App Show", options);
+    if (options.scene) {
+      this.handleScene(options.scene);
+    }
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:10", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:18", "App Hide");
+  },
+  methods: {
+    handleScene(scene) {
+      try {
+        const decodedScene = decodeURIComponent(scene);
+        common_vendor.index.__f__("log", "at App.vue:24", "处理扫码参数:", decodedScene);
+        common_vendor.index.setStorageSync("qrcode_scene", decodedScene);
+      } catch (e) {
+        common_vendor.index.__f__("error", "at App.vue:28", "解析扫码参数失败:", e);
+      }
+    }
   }
 };
 function createApp() {

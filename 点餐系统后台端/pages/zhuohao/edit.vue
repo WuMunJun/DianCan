@@ -1,8 +1,14 @@
 <template>
   <view class="uni-container">
     <uni-forms ref="form" :model="formData" validate-trigger="submit" err-show-type="toast">
-      <uni-forms-item name="zhuohao" label="" required>
+      <uni-forms-item name="zhuohao" label="桌号" required>
         <uni-easyinput placeholder="请输入桌号" v-model="formData.zhuohao"></uni-easyinput>
+      </uni-forms-item>
+      <uni-forms-item name="zhuoxing" label="桌型">
+        <uni-data-checkbox v-model="formData.zhuoxing" :localdata="zhuoxingOptions"></uni-data-checkbox>
+      </uni-forms-item>
+      <uni-forms-item name="renshu" label="容纳人数">
+        <uni-number-box v-model="formData.renshu" :min="1" :max="30"></uni-number-box>
       </uni-forms-item>
       <uni-forms-item name="status" label="桌号状态">
         <uni-data-checkbox v-model="formData.status" :localdata="statusOptions"></uni-data-checkbox>
@@ -46,6 +52,8 @@
     data() {
       let formData = {
         "zhuohao": "",
+        "zhuoxing": "中桌",
+        "renshu": 4,
         "status": "空桌"
       }
       return {
@@ -56,10 +64,17 @@
         rules: {
           ...getValidator(Object.keys(formData))
         },
+        zhuoxingOptions: [
+          {text: '小桌', value: '小桌'},
+          {text: '中桌', value: '中桌'},
+          {text: '大桌', value: '大桌'},
+          {text: '包间', value: '包间'}
+        ],
         statusOptions: [
           {text: '空桌', value: '空桌'},
           {text: '已开台', value: '已开台'},
           {text: '已下单', value: '已下单'},
+          {text: '已预定', value: '已预定'},
           {text: '已结账', value: '已结账'}
         ],
         submitting: false,
@@ -119,6 +134,8 @@
           const res = await zhuohaoCo.updateZhuohao({
             id: this.formDataId,
             zhuohao: value.zhuohao,
+            zhuoxing: value.zhuoxing,
+            renshu: value.renshu,
             status: value.status
           })
           if (res.errCode === 0) {
@@ -146,11 +163,13 @@
           mask: true
         })
         try {
-          const res = await db.collection(dbCollectionName).doc(id).field("zhuohao,qrcode,status").get()
+          const res = await db.collection(dbCollectionName).doc(id).field("zhuohao,zhuoxing,renshu,qrcode,status").get()
           const data = res.result.data[0]
           if (data) {
             this.formData = {
               zhuohao: data.zhuohao || '',
+              zhuoxing: data.zhuoxing || '中桌',
+              renshu: data.renshu || 4,
               status: data.status || '空桌'
             }
             this.originalZhuohao = data.zhuohao || ''
@@ -219,26 +238,6 @@
     font-size: 12px;
     color: #333;
     word-break: break-all;
-  }
-
-  .uni-input-border,
-  .uni-textarea-border {
-    width: 100%;
-    font-size: 14px;
-    color: #666;
-    border: 1px #e5e5e5 solid;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-
-  .uni-input-border {
-    padding: 0 10px;
-    height: 35px;
-  }
-
-  .uni-textarea-border {
-    padding: 10px;
-    height: 80px;
   }
 
   .uni-button-group {

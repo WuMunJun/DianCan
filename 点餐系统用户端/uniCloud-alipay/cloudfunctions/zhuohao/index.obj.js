@@ -1,4 +1,5 @@
 const uniID = require('uni-id-common')
+const createConfig = require('uni-config-center')
 
 async function getAccessTokenInner() {
 	const config = createConfig({
@@ -60,19 +61,32 @@ async function generateQrcodeInner(zhuohao) {
 			contentType: 'json',
 			dataType: 'buffer',
 			data: {
-				scene: 'zhuohao=' + zhuohao,
-				page: 'pages/home/home',
-				width: 430
+				scene: zhuohao,
+				width: 430,
+				check_path: false
 			}
 		})
 		if (result.status === 200 && result.data) {
-			const uploadRes = await uniCloud.uploadFile({
-				cloudPath: 'qrcode/zhuohao_' + zhuohao + '_' + Date.now() + '.png',
-				fileContent: result.data
-			})
-			return {
-				errCode: 0,
-				fileID: uploadRes.fileID
+			const contentType = result.headers && result.headers['content-type'] || ''
+			if (contentType.includes('image')) {
+				const uploadRes = await uniCloud.uploadFile({
+					cloudPath: 'qrcode/zhuohao_' + zhuohao + '_' + Date.now() + '.png',
+					fileContent: result.data
+				})
+				return {
+					errCode: 0,
+					fileID: uploadRes.fileID
+				}
+			} else {
+				let errMsg = '生成小程序码失败'
+				try {
+					const errData = JSON.parse(result.data.toString())
+					errMsg = errData.errmsg || errMsg
+				} catch (e) {}
+				return {
+					errCode: 'GENERATE_QRCODE_FAILED',
+					errMsg: errMsg
+				}
 			}
 		} else {
 			return {

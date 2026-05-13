@@ -1,0 +1,56 @@
+{
+	"bsonType": "object",
+	"required": ["zhuohao_id", "zhuohao", "yudingren", "lianxi", "renshu", "yuding_time"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"zhuohao_id": {
+			"bsonType": "string",
+			"description": "桌号记录ID"
+		},
+		"zhuohao": {
+			"bsonType": "string",
+			"description": "桌号"
+		},
+		"yudingren": {
+			"bsonType": "string",
+			"description": "预定人姓名"
+		},
+		"lianxi": {
+			"bsonType": "string",
+			"description": "联系电话"
+		},
+		"renshu": {
+			"bsonType": "int",
+			"description": "预定人数"
+		},
+		"yuding_time": {
+			"bsonType": "timestamp",
+			"description": "预定到店时间"
+		},
+		"beizhu": {
+			"bsonType": "string",
+			"description": "备注"
+		},
+		"status": {
+			"bsonType": "string",
+			"description": "预定状态",
+			"enum": ["待审核", "已确认", "已取消", "已完成"],
+			"defaultValue": "待审核"
+		}
+	}
+}

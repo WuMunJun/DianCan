@@ -179,6 +179,24 @@
         "navigationBarTitleText": "详情"
     }
 }
+,{
+    "path": "pages/yuding/list",
+    "style": {
+        "navigationBarTitleText": "预定管理"
+    }
+}
+,{
+    "path": "pages/yuding/add",
+    "style": {
+        "navigationBarTitleText": "新增预定"
+    }
+}
+,{
+    "path": "pages/yuding/detail",
+    "style": {
+        "navigationBarTitleText": "预定详情"
+    }
+}
 ],
 	"subPackages": [{
 			"root": "pages/system",

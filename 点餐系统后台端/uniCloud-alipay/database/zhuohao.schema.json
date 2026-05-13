@@ -1,1 +1,47 @@
-{"bsonType":"object","required":["zhuohao"],"permission":{"read":true,"create":true,"update":true,"delete":true},"properties":{"_id":{"description":"ID，系统自动生成"},"create_time":{"bsonType":"timestamp","description":"创建时间","forceDefaultValue":{"$env":"now"}},"zhuohao":{"bsonType":"string","description":"桌号"},"qrcode":{"bsonType":"string","description":"点餐二维码图片地址"},"status":{"bsonType":"string","description":"桌号状态","enum":["空桌","已开台","已下单","已结账"],"defaultValue":"空桌"}}}
+{
+	"bsonType": "object",
+	"required": ["zhuohao"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"zhuohao": {
+			"bsonType": "string",
+			"description": "桌号"
+		},
+		"zhuoxing": {
+			"bsonType": "string",
+			"description": "桌型",
+			"enum": ["小桌", "中桌", "大桌", "包间"],
+			"defaultValue": "中桌"
+		},
+		"renshu": {
+			"bsonType": "number",
+			"description": "容纳人数",
+			"defaultValue": 4
+		},
+		"qrcode": {
+			"bsonType": "string",
+			"description": "点餐二维码图片地址"
+		},
+		"status": {
+			"bsonType": "string",
+			"description": "桌号状态",
+			"enum": ["空桌", "已开台", "已下单", "已结账", "已预定"],
+			"defaultValue": "空桌"
+		}
+	}
+}

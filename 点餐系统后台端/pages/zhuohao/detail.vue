@@ -6,6 +6,14 @@
         <text class="detail-value">{{detailData.zhuohao}}</text>
       </view>
       <view class="detail-item">
+        <text class="detail-label">桌型</text>
+        <text class="detail-value">{{detailData.zhuoxing || '中桌'}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">容纳人数</text>
+        <text class="detail-value">{{detailData.renshu || 4}}人</text>
+      </view>
+      <view class="detail-item">
         <text class="detail-label">桌号状态</text>
         <text class="table-status" :class="'status-' + detailData.status">{{getStatusText(detailData.status)}}</text>
       </view>
@@ -24,6 +32,7 @@
     </view>
     <view class="btns">
       <button type="primary" @click="handleUpdate">修改</button>
+      <button type="default" @click="handleYuding">预定</button>
       <button type="warn" class="btn-delete" @click="handleDelete">删除</button>
     </view>
   </view>
@@ -38,6 +47,8 @@
         formDataId: '',
         detailData: {
           zhuohao: '',
+          zhuoxing: '中桌',
+          renshu: 4,
           status: '空桌'
         },
         qrcodeFileID: '',
@@ -74,11 +85,13 @@
       async getDetail(id) {
         uni.showLoading({ mask: true })
         try {
-          const res = await db.collection('zhuohao').doc(id).field('zhuohao,qrcode,status').get()
+          const res = await db.collection('zhuohao').doc(id).field('zhuohao,zhuoxing,renshu,qrcode,status').get()
           const data = res.result.data[0]
           if (data) {
             this.detailData = {
               zhuohao: data.zhuohao || '',
+              zhuoxing: data.zhuoxing || '中桌',
+              renshu: data.renshu || 4,
               status: data.status || '空桌'
             }
             if (data.qrcode) {
@@ -99,13 +112,24 @@
           '空桌': '空桌',
           '已开台': '已开台',
           '已下单': '已下单',
-          '已结账': '已结账'
+          '已结账': '已结账',
+          '已预定': '已预定'
         }
         return statusMap[status] || '空桌'
       },
       handleUpdate() {
         uni.navigateTo({
           url: './edit?id=' + this.formDataId,
+          events: {
+            refreshData: () => {
+              this.getDetail(this.formDataId)
+            }
+          }
+        })
+      },
+      handleYuding() {
+        uni.navigateTo({
+          url: '/pages/yuding/add?zhuohao_id=' + this.formDataId + '&zhuohao=' + this.detailData.zhuohao + '&renshu=' + this.detailData.renshu,
           events: {
             refreshData: () => {
               this.getDetail(this.formDataId)
@@ -184,25 +208,11 @@
     width: fit-content;
   }
 
-  .status-空桌 {
-    background-color: #e8f5e9;
-    color: #4caf50;
-  }
-
-  .status-已开台 {
-    background-color: #fff3e0;
-    color: #ff9800;
-  }
-
-  .status-已下单 {
-    background-color: #e3f2fd;
-    color: #2196f3;
-  }
-
-  .status-已结账 {
-    background-color: #fce4ec;
-    color: #e91e63;
-  }
+  .status-空桌 { background-color: #e8f5e9; color: #4caf50; }
+  .status-已开台 { background-color: #fff3e0; color: #ff9800; }
+  .status-已下单 { background-color: #e3f2fd; color: #2196f3; }
+  .status-已结账 { background-color: #fce4ec; color: #e91e63; }
+  .status-已预定 { background-color: #f3e5f5; color: #9c27b0; }
 
   .qrcode-preview {
     margin-top: 15px;
