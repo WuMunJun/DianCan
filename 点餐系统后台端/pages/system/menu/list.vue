@@ -207,25 +207,41 @@ if (process.env.NODE_ENV === 'development') {
 
 
 // 获取父的个数
-function getParents(menus, id, depth = 0) {
-	menus.forEach(menu => {
-		if (menu.menu_id === id && menu.parent_id) {
-			depth = depth + 1 + getParents(menus, menu.parent_id, depth)
+function getParents(menus, id) {
+	let depth = 0
+	let currentId = id
+	let visited = new Set()
+	while (true) {
+		if (visited.has(currentId)) break
+		visited.add(currentId)
+		let found = false
+		for (let menu of menus) {
+			if (menu.menu_id === currentId && menu.parent_id) {
+				depth++
+				currentId = menu.parent_id
+				found = true
+				break
+			}
 		}
-	})
+		if (!found) break
+	}
 	return depth
 }
 
 // 获取子的 _id
 function getChildren(menus, id, childrenIds = []) {
-	if (menus.find(menu => menu.parent_id === id)) {
+	let visited = new Set()
+	function collect(parentId, depth) {
+		if (depth > 100 || visited.has(parentId)) return
+		visited.add(parentId)
 		menus.forEach(item => {
-			if (item.parent_id === id) {
+			if (item.parent_id === parentId) {
 				childrenIds.push(item._id)
-				getChildren(menus, item.menu_id, childrenIds)
+				collect(item.menu_id, depth + 1)
 			}
 		})
 	}
+	collect(id, 0)
 	return childrenIds
 }
 

@@ -5,7 +5,7 @@
         <text>{{item.text}}</text>
       </view>
     </view>
-    <view class="yuding-list">
+    <view class="yuding-list" v-if="dataList.length > 0">
       <view v-for="(item, index) in dataList" :key="index" class="yuding-item" @click="handleItemClick(item._id)">
         <view class="yuding-header">
           <text class="yuding-zhuohao">{{item.zhuohao}}号桌</text>
@@ -31,6 +31,10 @@
         </view>
       </view>
     </view>
+    <view v-else-if="!loading" class="empty-state">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无预定数据</text>
+    </view>
     <uni-load-more :status="loading?'loading':(hasMore ? 'more' : 'noMore')"></uni-load-more>
     <uni-fab ref="fab" horizontal="right" vertical="bottom" :pop-menu="false" @fabClick="fabClick" />
   </view>
@@ -42,7 +46,7 @@
     data() {
       return {
         dataList: [],
-        loading: false,
+        loading: true,
         hasMore: true,
         currentFilter: '全部',
         pagination: {
@@ -76,7 +80,7 @@
         this.loadData(true)
       },
       async loadData(clear = false, callback) {
-        if (this.loading) return
+        if (this.loading && !clear) return
         this.loading = true
         if (clear) {
           this.pagination.current = 0
@@ -106,7 +110,8 @@
           }
           this.pagination.current++
         } catch (e) {
-          uni.showToast({ icon: 'none', title: '加载失败' })
+          this.dataList = []
+          this.hasMore = false
         } finally {
           this.loading = false
           callback && callback()
@@ -225,5 +230,20 @@
 .row-value {
   font-size: 24rpx;
   color: #333;
+}
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
 }
 </style>

@@ -108,8 +108,15 @@
 					errors
 				} = event.detail
 
-				// 表单校验失败页面会提示报错 ，要停止表单提交逻辑
 				if (errors) {
+					return
+				}
+
+				if (value.parent_id && value.parent_id === this.formData.menu_id) {
+					uni.showModal({
+						content: '父菜单不能是自身，这会导致循环引用',
+						showCancel: false
+					})
 					return
 				}
 
@@ -117,20 +124,40 @@
 					title: '修改中...',
 					mask: true
 				})
-				// 使用 uni-clientDB 提交数据
-				db.collection(dbCollectionName).doc(this.formDataId).update(value).then((res) => {
-				    uni.showToast({
-				        title: '修改成功'
-				    })
-				    this.getOpenerEventChannel().emit('refreshData')
-				    setTimeout(() => uni.navigateBack(), 500)
+				db.collection(dbCollectionName).where({
+					menu_id: value.parent_id
+				}).get().then(parentRes => {
+					if (value.parent_id && parentRes.result.data.length > 0) {
+						const parentMenu = parentRes.result.data[0]
+						if (parentMenu.parent_id === value.menu_id) {
+							uni.hideLoading()
+							uni.showModal({
+								content: '不能将此菜单设为父菜单的父菜单，这会导致循环引用',
+								showCancel: false
+							})
+							return
+						}
+					}
+					db.collection(dbCollectionName).doc(this.formDataId).update(value).then((res) => {
+					    uni.showToast({
+					        title: '修改成功'
+					    })
+					    this.getOpenerEventChannel().emit('refreshData')
+					    setTimeout(() => uni.navigateBack(), 500)
+					}).catch((err) => {
+					    uni.showModal({
+					        content: err.message || '请求服务失败',
+					        showCancel: false
+					    })
+					}).finally(() => {
+					    uni.hideLoading()
+					})
 				}).catch((err) => {
-				    uni.showModal({
-				        content: err.message || '请求服务失败',
-				        showCancel: false
-				    })
-				}).finally(() => {
-				    uni.hideLoading()
+					uni.hideLoading()
+					uni.showModal({
+						content: err.message || '校验父菜单失败',
+						showCancel: false
+					})
 				})
 			},
 

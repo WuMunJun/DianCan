@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index"
 		},
@@ -195,6 +195,72 @@
     "path": "pages/yuding/detail",
     "style": {
         "navigationBarTitleText": "预定详情"
+    }
+}
+,{
+    "path": "pages/shangpin_fenlei/list",
+    "style": {
+        "navigationBarTitleText": "商品分类"
+    }
+}
+,{
+    "path": "pages/shangpin_fenlei/add",
+    "style": {
+        "navigationBarTitleText": "新增分类"
+    }
+}
+,{
+    "path": "pages/shangpin_fenlei/edit",
+    "style": {
+        "navigationBarTitleText": "编辑分类"
+    }
+}
+,{
+    "path": "pages/shangpin/list",
+    "style": {
+        "navigationBarTitleText": "商品管理"
+    }
+}
+,{
+    "path": "pages/shangpin/add",
+    "style": {
+        "navigationBarTitleText": "新增商品"
+    }
+}
+,{
+    "path": "pages/shangpin/edit",
+    "style": {
+        "navigationBarTitleText": "编辑商品"
+    }
+}
+,{
+    "path": "pages/shangpin/detail",
+    "style": {
+        "navigationBarTitleText": "商品详情"
+    }
+}
+,{
+    "path": "pages/taocan/list",
+    "style": {
+        "navigationBarTitleText": "套餐管理"
+    }
+}
+,{
+    "path": "pages/taocan/add",
+    "style": {
+        "navigationBarTitleText": "新增套餐"
+    }
+}
+,{
+    "path": "pages/taocan/edit",
+    "style": {
+        "navigationBarTitleText": "编辑套餐"
+    }
+}
+,{
+    "path": "pages/taocan/detail",
+    "style": {
+        "navigationBarTitleText": "套餐详情"
     }
 }
 ],
@@ -543,7 +609,7 @@
 	"uniIdRouter": {
 		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
 		"needLogin": [
-			"^(?!.*uni-id-pages\/pages\/(login|register|retrieve)\/).*$"
+			"^(?!.*uni-id-pages\/pages\/(login|register|retrieve)\/)(?!.*pages\/fix-menu\/).*"
 		],
 		"resToLogin": true
 	}

@@ -1,0 +1,105 @@
+{
+	"bsonType": "object",
+	"required": ["name", "price"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "套餐名称"
+		},
+		"type": {
+			"bsonType": "string",
+			"description": "套餐类型",
+			"enum": ["酒餐套餐", "酒水套餐", "自定义套餐"],
+			"defaultValue": "自定义套餐"
+		},
+		"price": {
+			"bsonType": "number",
+			"description": "套餐价格"
+		},
+		"original_price": {
+			"bsonType": "number",
+			"description": "套餐原价"
+		},
+		"image": {
+			"bsonType": "string",
+			"description": "套餐图片"
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "套餐描述"
+		},
+		"items": {
+			"bsonType": "array",
+			"description": "套餐包含商品列表",
+			"items": {
+				"bsonType": "object",
+				"properties": {
+					"shangpin_id": {
+						"bsonType": "string",
+						"description": "商品ID"
+					},
+					"shangpin_name": {
+						"bsonType": "string",
+						"description": "商品名称"
+					},
+					"quantity": {
+						"bsonType": "number",
+						"description": "数量",
+						"defaultValue": 1
+					},
+					"price": {
+						"bsonType": "number",
+						"description": "商品单价"
+					}
+				}
+			}
+		},
+		"stock": {
+			"bsonType": "number",
+			"description": "库存数量，-1表示不限",
+			"defaultValue": -1
+		},
+		"sale_count": {
+			"bsonType": "number",
+			"description": "已售数量",
+			"defaultValue": 0
+		},
+		"status": {
+			"bsonType": "string",
+			"description": "套餐状态",
+			"enum": ["上架", "下架"],
+			"defaultValue": "上架"
+		},
+		"sale_time_start": {
+			"bsonType": "string",
+			"description": "售卖开始时段",
+			"defaultValue": ""
+		},
+		"sale_time_end": {
+			"bsonType": "string",
+			"description": "售卖结束时段",
+			"defaultValue": ""
+		},
+		"sort": {
+			"bsonType": "number",
+			"description": "排序号",
+			"defaultValue": 0
+		}
+	}
+}

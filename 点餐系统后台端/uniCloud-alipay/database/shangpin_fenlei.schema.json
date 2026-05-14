@@ -1,0 +1,40 @@
+{
+	"bsonType": "object",
+	"required": ["name"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "分类名称"
+		},
+		"icon": {
+			"bsonType": "string",
+			"description": "分类图标"
+		},
+		"sort": {
+			"bsonType": "number",
+			"description": "排序号",
+			"defaultValue": 0
+		},
+		"status": {
+			"bsonType": "bool",
+			"description": "是否启用",
+			"defaultValue": true
+		}
+	}
+}
